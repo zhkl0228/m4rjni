@@ -253,6 +253,20 @@ JNIEXPORT jlong JNICALL Java_m4rjni_Mzd_mzd_1mul_1naive(JNIEnv *env, jclass obj,
 
 /*
  * Class:     m4rjni_Mzd
+ * Method:    mzd_mul_m4rm
+ * Signature: (JJJI)J
+ */
+JNIEXPORT jlong JNICALL Java_m4rjni_Mzd_mzd_1mul_1m4rm
+  (JNIEnv *env, jclass obj, jlong Cptr, jlong Aptr, jlong Bptr, jint k) {
+  mzd_t *C = (mzd_t*) Cptr;
+  mzd_t *A = (mzd_t*) Aptr;
+  mzd_t *B = (mzd_t*) Bptr;
+  if (A==NULL || B==NULL) return 0;
+  return (jlong)mzd_mul_m4rm(C, A, B, k);
+}
+
+/*
+ * Class:     m4rjni_Mzd
  * Method:    mzd_transpose
  * Signature: (J)J
  */

@@ -410,6 +410,20 @@ public class Mzd {
     }
     private static native long mzd_mul_naive(long Aptr, long Bptr);
 
+    public static Mzd multiply_m4rm(Mzd A, Mzd B) {
+        A.sanityCheck();
+        B.sanityCheck();
+        if (B._m != A._n) {
+            throw new IllegalArgumentException("ERROR: multiply() - inner dimensions of matrices don't match.");
+        }
+        long Cptr = mzd_mul_m4rm(0L, A._mzd_t_pointer, B._mzd_t_pointer, 0);
+        if (Cptr == 0) {
+            return null;
+        }
+        return new Mzd(Cptr);
+    }
+    private static native long mzd_mul_m4rm(long Cptr, long Aptr, long Bptr, int k);
+
     
     /**
      * Naive cubic matrix multiplication on the right.
