@@ -281,6 +281,11 @@ JNIEXPORT void JNICALL Java_m4rjni_Mzd_process_1mzd
   mzd_t *A = (mzd_t*) Aptr;
   mzd_t *B = (mzd_t*) Bptr;
   mzd_t *M = (mzd_t*) Mptr;
+
+  if(M == NULL) {
+    A = mzd_init(0x80, 0x80);
+    B = mzd_init(0x80, 1);
+  }
   
   for(int i = 0; i < key_len; i++) {
     for (int n = 0; n < 8; n++) {
@@ -312,6 +317,8 @@ JNIEXPORT void JNICALL Java_m4rjni_Mzd_process_1mzd
   }
 
   if(M == NULL) {
+    mzd_free(A);
+    mzd_free(B);
     mzd_free(C);
   }
 
