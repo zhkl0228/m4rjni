@@ -74,10 +74,10 @@ JNIEXPORT jlong JNICALL Java_m4rjni_Mzd_mzd_1mul_1m4rm
 /*
  * Class:     m4rjni_Mzd
  * Method:    process_mzd
- * Signature: (Ljava/nio/ByteBuffer;[B)V
+ * Signature: (Ljava/nio/ByteBuffer;[BJJJ)V
  */
 JNIEXPORT void JNICALL Java_m4rjni_Mzd_process_1mzd
-  (JNIEnv *, jclass, jobject, jbyteArray);
+  (JNIEnv *, jclass, jobject, jbyteArray, jlong, jlong, jlong);
 
 #ifdef __cplusplus
 }
