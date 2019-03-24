@@ -267,6 +267,57 @@ JNIEXPORT jlong JNICALL Java_m4rjni_Mzd_mzd_1mul_1m4rm
 
 /*
  * Class:     m4rjni_Mzd
+ * Method:    process_mzd
+ * Signature: (Ljava/nio/ByteBuffer;[B)V
+ */
+JNIEXPORT void JNICALL Java_m4rjni_Mzd_process_1mzd
+  (JNIEnv *env, jclass obj, jobject buffer, jbyteArray key) {
+  jlong block_len = (*env)->GetDirectBufferCapacity(env, buffer);
+  jbyte* block_data = (jbyte*) (*env)->GetDirectBufferAddress(env, buffer);
+
+  jsize key_len = (*env)->GetArrayLength(env, key);
+  jbyte* key_data = (*env)->GetByteArrayElements(env, key, NULL);
+  mzd_t *A = mzd_init(0x80, 0x80);
+  mzd_t *B = mzd_init(0x80, 0x1);
+  
+  for(int i = 0; i < key_len; i++) {
+    for (int n = 0; n < 8; n++) {
+      int row = i / 16;
+      int col = (i % 16) * 8 + n;
+      int value = (key_data[i] >> n) & 1;
+      mzd_write_bit(A, row, col, value);
+    }
+  }
+
+  for (int i = 0; i < block_len; i++) {
+    for (int n = 0; n < 8; n++) {
+      int row = i * 8 + n;
+      int value = (block_data[i] >> (7-n)) & 1;
+      mzd_write_bit(B, row, 0, value);
+    }
+  }
+
+  mzd_t *C = mzd_mul_m4rm(NULL, A, B, 0);
+
+  for (int i = 0; i < block_len; i++) {
+    int v = 0;
+    for (int n = 0; n < 8; n++) {
+      if (mzd_read_bit(C, i * 8 + n, 0) == 1) {
+        v |= 1 << (7-n);
+      }
+    }
+    block_data[i] = v;
+  }
+
+  mzd_free(C);
+  mzd_free(A);
+  mzd_free(B);
+
+  (*env)->ReleaseByteArrayElements(env, key, key_data, JNI_ABORT);
+}
+
+/*
+ * Class:     m4rjni_Mzd
  * Method:    mzd_transpose
  * Signature: (J)J
  */
